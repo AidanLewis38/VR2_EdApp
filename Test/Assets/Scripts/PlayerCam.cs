@@ -6,6 +6,7 @@ public class PlayerCam : MonoBehaviour
 {
     public float sensX;
     public float sensY;
+    public Texture2D crosshairImage;
 
     public Transform orientation;
 
@@ -33,4 +34,11 @@ public class PlayerCam : MonoBehaviour
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
     }
+    void OnGUI()
+    {
+        float xMin = (Screen.width - Input.mousePosition.x) - (crosshairImage.width / 2);
+        float yMin = (Screen.height - Input.mousePosition.y) - (crosshairImage.height / 2);
+        GUI.DrawTexture(new Rect(xMin, yMin, crosshairImage.width, crosshairImage.height), crosshairImage);
+    }
+
 }

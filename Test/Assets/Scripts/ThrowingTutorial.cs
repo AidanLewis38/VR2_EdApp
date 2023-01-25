@@ -8,22 +8,25 @@ public class ThrowingTutorial : MonoBehaviour
     [Header("References")]
     public Transform cam;
     public Transform attackPoint;
-    public GameObject objectToThrow;
+    public static GameObject objectToThrow;
 
     [Header("Settings")]
     public static int totalThrows;
     public float throwCooldown;
+    public GameObject one;
 
     [Header("Throwing")]
     public KeyCode throwKey = KeyCode.Mouse0;
     public float throwForce;
     public float throwUpwardForce;
+    public static Rigidbody projectileRb;
 
     bool readyToThrow;
 
     private void Start()
     {
         readyToThrow = true;
+        projectileRb = one.GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -34,7 +37,7 @@ public class ThrowingTutorial : MonoBehaviour
         }
     }
 
-    private void Throw()
+        private void Throw()
     {
         readyToThrow = false;
 
@@ -42,7 +45,7 @@ public class ThrowingTutorial : MonoBehaviour
         GameObject projectile = Instantiate(objectToThrow, attackPoint.position, cam.rotation);
 
         // get rigidbody component
-        Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
+        projectileRb = projectile.GetComponent<Rigidbody>();
 
         // calculate direction
         Vector3 forceDirection = cam.transform.forward;
@@ -55,11 +58,15 @@ public class ThrowingTutorial : MonoBehaviour
         }
 
         // add force
+        projectileRb.isKinematic = false;
+
         Vector3 forceToAdd = forceDirection * throwForce + transform.up * throwUpwardForce;
 
         projectileRb.AddForce(forceToAdd, ForceMode.Impulse);
 
         totalThrows--;
+
+        Destroy(objectToThrow);
 
         // implement throwCooldown
         Invoke(nameof(ResetThrow), throwCooldown);
