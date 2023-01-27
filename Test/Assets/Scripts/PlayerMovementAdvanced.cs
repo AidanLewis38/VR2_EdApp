@@ -12,6 +12,10 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     public float groundDrag;
 
+    [Header("References")]
+    public Transform cam;
+    public Transform attackPoint;
+
     [Header("Jumping")]
     public float jumpForce;
     public float jumpCooldown;
@@ -226,5 +230,19 @@ public class PlayerMovementAdvanced : MonoBehaviour
     private Vector3 GetSlopeMoveDirection()
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+    }
+    void OnTriggerExit(Collider other)
+    {
+        // Destroy everything that leaves the trigger
+        Vector3 forceDirection = cam.transform.forward;
+
+        RaycastHit look;
+
+        if (Physics.Raycast(cam.position, cam.forward, out look, 500f))
+        {
+            forceDirection = (look.point - attackPoint.position).normalized;
+        }
+        Vector3 forceToAdd = forceDirection * -20f;
+        rb.AddForce(forceToAdd, ForceMode.Impulse);
     }
 }
